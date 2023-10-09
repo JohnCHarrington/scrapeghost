@@ -16,6 +16,7 @@ class Model:
 
 
 models = [
+    Model("local", 0.0, 0.0, 999999999),
     Model("gpt-4", 0.03, 0.06, 8192),
     Model("gpt-4-32k", 0.06, 0.12, 32768),
     Model("gpt-3.5-turbo", 0.0015, 0.002, 4096),

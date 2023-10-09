@@ -53,7 +53,6 @@ class OpenAiCall:
         postprocessors: list | None = None,
         # retry rules
         retry: RetryRule = RetryRule(1, 30),
-        use_langchain: bool = False,
     ):
         self.total_prompt_tokens = 0
         self.total_completion_tokens = 0
@@ -61,7 +60,6 @@ class OpenAiCall:
         self.max_cost = max_cost
         self.models = models
         self.retry = retry
-        self.use_langchain = use_langchain
         if model_params is None:
             model_params = {}
         self.model_params = model_params
@@ -97,7 +95,9 @@ class OpenAiCall:
             )
         start_t = time.time()
 
-        call_method = lc_openai if self.use_langchain else openai
+        use_langchain = model == 'local'
+
+        call_method = lc_openai if use_langchain else openai
 
         completion = call_method.ChatCompletion.create(
             model=model,
@@ -105,9 +105,9 @@ class OpenAiCall:
             **self.model_params,
         )
         elapsed = time.time() - start_t
-        p_tokens = completion.usage.prompt_tokens if not self.use_langchain else np.nan
-        c_tokens = completion.usage.completion_tokens if not self.use_langchain else np.nan
-        cost = _model_dict[model].cost(c_tokens, p_tokens) if not self.use_langchain else np.nan
+        p_tokens = completion.usage.prompt_tokens if not use_langchain else 0
+        c_tokens = completion.usage.completion_tokens if not use_langchain else 0
+        cost = _model_dict[model].cost(c_tokens, p_tokens)
         logger.info(
             "API response",
             duration=elapsed,

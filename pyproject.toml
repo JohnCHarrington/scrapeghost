@@ -19,6 +19,7 @@ typer = ">0.7,<1.0"
 rich = "^13.3.2"
 tiktoken = "^0.3.2"
 pydantic = "^2"
+langchain = "langchain[llms]"
 
 
 [tool.poetry.group.dev.dependencies]
